@@ -1,0 +1,3 @@
+include README.rst LICENSE.txt requirements.txt release_history.rst
+recursive-include dataIO *.*
+recursive-exclude dataIO *.bat
