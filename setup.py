@@ -51,12 +51,12 @@ Frequent used classifiers List = [
 """
 
 from setuptools import setup, find_packages
-from datetime import datetime
+from datetime import date
 import os
 
+NAME = "dataIO" # name your package <=== VERY IMPORTANT
 GITHUB_ACCOUNT = "MacHu-GWU" # your GitHub account name
-RELEASE_TAG = "2016-04-22" # the GitHub release tag
-NAME = "dataIO" # name your package
+RELEASE_TAG = str(date.today()) # the GitHub release tag
 
 VERSION = __import__(NAME).__version__
 PACKAGES = [NAME] + ["%s.%s" % (NAME, i) for i in find_packages(NAME)]
@@ -99,21 +99,21 @@ with open("requirements.txt", "rb") as f:
     REQUIRES = [i.strip() for i in f.read().decode("utf-8").split("\n")]
     
 setup(
-    name = NAME,
-    packages = PACKAGES,
-    include_package_data = True,
-    package_data  = PACKAGE_DATA,
-    version = VERSION,
-    author = AUTHOR,
-    author_email = AUTHOR_EMAIL,
-    maintainer = MAINTAINER,
-    maintainer_email = MAINTAINER_EMAIL,
-    url = URL,
-    description = SHORT_DESCRIPTION,
-    long_description = LONG_DESCRIPTION,
-    download_url = DOWNLOAD_URL,
-    classifiers = CLASSIFIERS,
-    platforms = PLATFORMS,
-    license = LICENSE,
-    install_requires = REQUIRES,
+    name=NAME,
+    packages=PACKAGES,
+    include_package_data=True,
+    package_data =PACKAGE_DATA,
+    version=VERSION,
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
+    maintainer=MAINTAINER,
+    maintainer_email=MAINTAINER_EMAIL,
+    url=URL,
+    description=SHORT_DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
+    download_url=DOWNLOAD_URL,
+    classifiers=CLASSIFIERS,
+    platforms=PLATFORMS,
+    license=LICENSE,
+    install_requires=REQUIRES,
 )
