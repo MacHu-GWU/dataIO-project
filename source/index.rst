@@ -10,7 +10,7 @@
    	pickle utility module <pk.rst>
    	text file utility module <textfile.rst>
 
-
+.. include:: about.rst
 
 Indices and tables
 ==================
