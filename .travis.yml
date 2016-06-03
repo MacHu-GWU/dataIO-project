@@ -6,4 +6,8 @@ python:
   - "3.5"
 install:
   - pip install . # Install it self
+<<<<<<< HEAD
 script: py.test
+=======
+script: py.test
+>>>>>>> origin/master
