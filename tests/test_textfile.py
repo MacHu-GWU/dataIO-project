@@ -4,7 +4,8 @@
 import os
 from dataIO import textfile
 
-path = os.path.abspath("test_textfile.py")
+
+path = os.path.abspath(__file__)
 
 with open(path, "rb") as f:
     f_lines = [line.decode("utf-8") for line in f]
