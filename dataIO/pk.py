@@ -46,7 +46,7 @@ class PickleExtError(Exception):
     pass
 
 
-def parse_path(abspath):
+def is_pickle_file(abspath):
     """Parse file extension.
     
     - *.pickle: uncompressed, utf-8 encode pickle file
@@ -59,7 +59,7 @@ def parse_path(abspath):
     elif ext == ".gz":
         is_pickle = False
     elif ext == ".tmp":
-        return parse_path(fname)
+        return is_pickle_file(fname)
     else:
         raise PickleExtError(
             "'%s' is not a valid pickle file. "
@@ -112,7 +112,7 @@ def load(abspath, default=dict(), enable_verbose=True):
     prt("\nLoad from '%s' ..." % abspath, enable_verbose)
     
     abspath = lower_ext(str(abspath))
-    is_pickle = parse_path(abspath)
+    is_pickle = is_pickle_file(abspath)
         
     if not os.path.exists(abspath):
         prt("    File not found, use default value: %r" % default, enable_verbose)
@@ -188,7 +188,7 @@ def dump(data, abspath, pk_protocol=py23.pk_protocol,
     prt("\nDump to '%s' ..." % abspath, enable_verbose)
     
     abspath = lower_ext(str(abspath))
-    is_pickle = parse_path(abspath)
+    is_pickle = is_pickle_file(abspath)
     
     if os.path.exists(abspath):
         if not overwrite: # 存在, 并且overwrite=False
@@ -270,66 +270,3 @@ def str2obj(s):
     从base64编码的 ``纯ASCII字符串`` 中恢复Python对象
     """
     return pickle.loads(base64.urlsafe_b64decode(s.encode("utf-8")))
-
-
-#--- Unittest ---
-if __name__ == "__main__":
-    import unittest
-    from datetime import datetime
-    from dataIO import py23
-
-    class Unittest_Function(unittest.TestCase):
-        def test_parse_path(self):
-            self.assertTrue(parse_path("test.pickle"))
-            self.assertTrue(parse_path("test.PK"))
-            self.assertTrue(parse_path("test.p.tmp"))
-            self.assertFalse(parse_path("test.gz"))
-            self.assertFalse(parse_path("test.GZ"))
-            self.assertFalse(parse_path("test.gz.tmp"))
-            self.assertRaises(PickleExtError, parse_path, "test.txt")
-            
-            
-    data = {
-        "data": {
-            "int": 100, 
-            "float": 3.1415926535, 
-            "str": "string 字符串",
-            "bytes": "bytes 比特串".encode("utf-8"),
-            "boolean": True,
-            "datetime": datetime.now(),
-        },
-    }
-    
-    test_dot_pickle = os.path.join("tests", "test.PICKLE")
-    test_dot_gz = os.path.join("tests", "test.GZ")
-
-    class UnittestPickle(unittest.TestCase):
-        def test_prevent_overwrite(self):
-            """Test whether file overwrite alert is working.
-            """
-            safe_dump(data, test_dot_pickle, enable_verbose=False)
-            # should print: "Stop! File exists and overwrite is not allowed"
-            dump({"a": 1}, test_dot_pickle)
-            
-        def test_compress(self):
-            """Test whether data compression is working.
-            """
-            safe_dump(data, test_dot_gz, enable_verbose=False)
-            
-            # test whether 'before data' == 'after data'
-            self.assertDictEqual(data, load(test_dot_gz, enable_verbose=False))
-        
-        def test_obj2_bytes_or_str(self):
-            self.assertDictEqual(data, str2obj(obj2str(data)))
-            self.assertDictEqual(data, bytes2obj(obj2bytes(data)))
-         
-        def tearDown(self):
-            """Clean up test file.
-            """
-            for abspath in [test_dot_pickle, test_dot_gz]:
-                try:
-                    os.remove(abspath)
-                except Exception as e:
-                    pass
-            
-    unittest.main()

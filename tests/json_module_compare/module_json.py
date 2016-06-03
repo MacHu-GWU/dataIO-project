@@ -23,17 +23,18 @@ encoder.FLOAT_REPR = lambda x: format(x, ".2f")
 
 
 class Unittest(unittest.TestCase):
-    def test_all(self):        
+    def test_all(self):
         data = {
-            "int": 100, 
-            "float": 3.1415926535, 
+            "int": 100,
+            "float": 3.1415926535,
             "str": "string example 字符串例子",
             "boolean": True,
         }
         js = json.dumps(data)
-        
+
         self.assertEqual(data["int"], json.loads(js)["int"])
-        self.assertAlmostEqual(data["float"], json.loads(js)["float"], delta=0.0001)
+        self.assertAlmostEqual(data["float"], json.loads(js)[
+                               "float"], delta=0.0001)
         self.assertEqual(data["str"], json.loads(js)["str"])
         self.assertEqual(data["boolean"], json.loads(js)["boolean"])
 

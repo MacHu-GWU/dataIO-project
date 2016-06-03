@@ -20,24 +20,25 @@ import ujson
 
 
 class Unittest(unittest.TestCase):
-    def test_all(self):        
+    def test_all(self):
         data = {
-            "int": 100, 
-            "float": 3.1415926535, 
+            "int": 100,
+            "float": 3.1415926535,
             "str": "string example 字符串例子",
             "bytes": "bytes example 比特串例子".encode("utf-8"),
             "boolean": True,
             "datetime": datetime.now()
         }
         js = ujson.dumps(data)
-        
+
         self.assertEqual(data["int"], ujson.loads(js)["int"])
-        self.assertAlmostEqual(data["float"], ujson.loads(js)["float"], delta=0.0001)
+        self.assertAlmostEqual(data["float"], ujson.loads(js)[
+                               "float"], delta=0.0001)
         self.assertEqual(data["str"], ujson.loads(js)["str"])
-        self.assertNotEqual(data["bytes"], ujson.loads(js)["bytes"]) # 不相等
+        self.assertNotEqual(data["bytes"], ujson.loads(js)["bytes"])  # 不相等
         self.assertEqual(data["boolean"], ujson.loads(js)["boolean"])
         self.assertNotEqual(data["datetime"], ujson.loads(js)["datetime"])
-        
+
         print(ujson.dumps(data, indent=4))
 
 

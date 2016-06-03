@@ -46,7 +46,7 @@ class JsonExtError(Exception):
     pass
 
 
-def parse_path(abspath):
+def is_json_file(abspath):
     """Parse file extension.
     
     - *.json: uncompressed, utf-8 encode json file
@@ -59,7 +59,7 @@ def parse_path(abspath):
     elif ext == ".gz":
         is_json = False
     elif ext == ".tmp":
-        return parse_path(fname)
+        return is_json_file(fname)
     else:
         raise JsonExtError(
             "'%s' is not a valid json file. "
@@ -112,7 +112,7 @@ def load(abspath, default=dict(), enable_verbose=True):
     prt("\nLoad from '%s' ..." % abspath, enable_verbose)
     
     abspath = lower_ext(str(abspath))
-    is_json = parse_path(abspath)
+    is_json = is_json_file(abspath)
         
     if not os.path.exists(abspath):
         prt("    File not found, use default value: %r" % default, enable_verbose)
@@ -197,7 +197,7 @@ def dump(data, abspath,
     prt("\nDump to '%s' ..." % abspath, enable_verbose)
     
     abspath = lower_ext(str(abspath))
-    is_json = parse_path(abspath)
+    is_json = is_json_file(abspath)
     
     if os.path.exists(abspath):
         if not overwrite: # 存在, 并且overwrite=False
@@ -278,111 +278,3 @@ def pprint(data):
     以人类可读的方式打印可Json化的Python对象。
     """
     print(json.dumps(data, sort_keys=True, indent=4))
-
-
-#--- Unittest ---
-if __name__ == "__main__":
-    import unittest
-    from datetime import datetime
-    from dataIO import py23
-
-    class Unittest_Function(unittest.TestCase):
-        def test_parse_path(self):
-            self.assertTrue(parse_path("test.json"))
-            self.assertTrue(parse_path("test.JSON"))
-            self.assertTrue(parse_path("test.json.tmp"))
-            self.assertFalse(parse_path("test.gz"))
-            self.assertFalse(parse_path("test.GZ"))
-            self.assertFalse(parse_path("test.gz.tmp"))
-            self.assertRaises(JsonExtError, parse_path, "test.txt")
-            
-    
-    data = {
-        "data": {
-            "int": 100, 
-            "float": 3.1415926535, 
-            "str": "string 字符串",
-            "bytes": "bytes 比特串".encode("utf-8"),
-            "boolean": True,
-            "datetime": datetime.now(),
-        },
-    }
-    
-    test_dot_json = os.path.join("tests", "test.JSON")
-    test_dot_gz = os.path.join("tests", "test.GZ")
-    
-    test_which = "bson" # CHANGE THIS VALUE to 'json' and 'bson' by turns 
-    
-    if test_which == "json":
-        import json
-        del data["data"]["bytes"]
-        del data["data"]["datetime"]
-          
-        class UnittestJson(unittest.TestCase):
-            def test_prevent_overwrite(self):
-                """Test whether file overwrite alert is working.
-                """
-                safe_dump(data, test_dot_json, enable_verbose=False)
-                # should print: "Stop! File exists and overwrite is not allowed"
-                dump({"a": 1}, test_dot_json)
-             
-            def test_float_precision(self):
-                """Test whether float_precision keywork is working.
-                """
-                safe_dump(data, test_dot_json, float_precision=2, enable_verbose=False)
-                 
-                # test whether after float value has correct prevision
-                self.assertAlmostEqual(
-                    load(test_dot_json, enable_verbose=False)["data"]["float"], 
-                    3.14, delta=0.000000001)
-      
-            def test_compress(self):
-                """Test whether data compression is working.
-                """
-                safe_dump(data, test_dot_gz, enable_verbose=False)
-                 
-                # test whether 'before data' == 'after data'
-                self.assertDictEqual(data, load(test_dot_gz, enable_verbose=False))
-             
-            def tearDown(self):
-                """Clean up test file.
-                """
-                for abspath in [test_dot_json, test_dot_gz]:
-                    try:
-                        os.remove(abspath)
-                    except:
-                        pass
-                     
-    elif test_which == "bson":
-        from bson import json_util as json
-         
-        class UnittestBson(unittest.TestCase):
-            def test_bytes_and_datetime(self):
-                safe_dump(data, test_dot_json, enable_verbose=False)
-                d = load(test_dot_json, enable_verbose=False)
-                
-                self.assertEqual(d["data"]["int"], data["data"]["int"])
-                self.assertAlmostEqual(d["data"]["float"], data["data"]["float"], delta=0.000000001)
-                self.assertEqual(d["data"]["str"], data["data"]["str"])
-                self.assertEqual(d["data"]["boolean"], data["data"]["boolean"])
-
-                if py23.is_py3:
-                    self.assertEqual(d["data"]["bytes"].decode("utf-8"), "bytes 比特串")
-                 
-                dt1, dt2 = data["data"]["datetime"], d["data"]["datetime"]
-                self.assertEqual(dt1.date(), dt2.date())
-                self.assertEqual(dt1.hour, dt2.hour)
-                self.assertEqual(dt1.minute, dt2.minute)
-                self.assertEqual(dt1.second, dt2.second)
-                self.assertAlmostEqual(dt1.microsecond - dt2.microsecond, 0, delta=1000)
-
-            def tearDown(self):
-                """Clean up test file.
-                """
-                for abspath in [test_dot_json, test_dot_gz]:
-                    try:
-                        os.remove(abspath)
-                    except:
-                        pass
-                    
-    unittest.main()

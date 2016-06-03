@@ -1,3 +1,12 @@
+.. image:: https://travis-ci.org/MacHu-GWU/dataIO-project.svg?branch=master
+
+.. image:: https://img.shields.io/pypi/v/dataIO.svg
+
+.. image:: https://img.shields.io/pypi/l/dataIO.svg
+
+.. image:: https://img.shields.io/pypi/pyversions/dataIO.svg
+
+
 Welcome to the dataIO Documentation
 ===================================
 
@@ -14,11 +23,11 @@ Now it support:
 **Quick links**:
 
 - `GitHub Homepage <https://github.com/MacHu-GWU/dataIO-project>`_
-- `Online Documentation <http://www.wbh-doc.com.s3.amazonaws.com/dataIO/index.html>`_
+- `Online Documentation <http://pythonhosted.org/dataIO>`_
 - `PyPI download <https://pypi.python.org/pypi/dataIO>`_
 - `Install <install_>`_
 - `Issue submit and feature request <https://github.com/MacHu-GWU/dataIO-project/issues>`_
-- `API reference and source code <http://www.wbh-doc.com.s3.amazonaws.com/dataIO/py-modindex.html>`_
+- `API reference and source code <http://pythonhosted.org/dataIO/py-modindex.html>`_
 
 
 .. _install:

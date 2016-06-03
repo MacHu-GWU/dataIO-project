@@ -52,34 +52,3 @@ def decompress_str(s):
     4. bytes -> str
     """
     return zlib.decompress(base64.b64decode(s)).decode("utf-8")
-
-
-#--- Unittest ---
-if __name__ == "__main__":
-    import os
-    import unittest
-    
-    b = open("compress.py", "rb").read()
-    s = b.decode("utf-8")
-
-    class Unittest(unittest.TestCase):
-        def test_gzip(self):
-            write_gzip(b, "compress.gz")
-            b1 = read_gzip("compress.gz")
-            self.assertEqual(b, b1)
-            try:
-                os.remove("compress.gz")
-            except:
-                pass
-            
-        def test_compress_decompress_str(self):
-            s1 = compress_str(s) # compressed
-            s2 = decompress_str(s1) # decompressed
-            
-            # 压缩前的字符串和压缩后的字符串一致
-            self.assertEqual(s, s2)
-            
-            # 压缩后的字符串比压缩前的字符串长度要小
-            self.assertLess(len(s1), len(s))
-        
-    unittest.main()

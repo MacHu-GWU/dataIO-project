@@ -3,17 +3,20 @@
 
 from __future__ import print_function
 from docfly import Docfly
-import shutil
- 
+import os, shutil
+
+package_name = "dataIO"
+
 try:
-    shutil.rmtree(r"source\dataIO")
+    shutil.rmtree(os.path.join("source", package_name))
 except Exception as e:
     print(e)
      
-docfly = Docfly("dataIO", dst="source", 
+docfly = Docfly(
+    package_name, 
+    dst="source",
     ignore=[
-        "dataIO.zzz_manual_install.py",
-        "dataIO.tests",
+        "%s.zzz_manual_install.py" % package_name,
     ]
 )
 docfly.fly()
