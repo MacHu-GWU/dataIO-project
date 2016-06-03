@@ -9,8 +9,8 @@ from dataIO import py23
 from dataIO import js
 from dataIO import textfile
 
-path_json = "test.json"
-path_gz = "test.json.gz"
+path_json = os.path.abspath("test.json")
+path_gz = os.path.abspath("test.json.gz")
 
 data_simple = {
     "int": 100,

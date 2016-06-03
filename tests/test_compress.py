@@ -6,9 +6,9 @@ from dataIO import compress
 from dataIO import textfile
 
 
-b = textfile.readbytes("test_compress.py")
+b = textfile.readbytes(__file__)
 s = b.decode("utf-8")
-path = "compress.gz"
+path = os.path.abspath("compress.gz")
 
 
 def test_gzip():

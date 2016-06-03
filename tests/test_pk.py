@@ -9,8 +9,8 @@ from dataIO import py23
 from dataIO import pk
 from dataIO import textfile
 
-path_pk = "test.pickle"
-path_gz = "test.pickle.gz"
+path_pk = os.path.abspath("test.pickle")
+path_gz = os.path.abspath("test.pickle.gz")
 
 data = {
     "int": 100,
