@@ -15,8 +15,8 @@ path_gz = os.path.abspath("test.pickle.gz")
 data = {
     "int": 100,
     "float": 3.1415926535,
-    "str": "string 字符串",
-    "bytes": "bytes 比特串".encode("utf-8"),
+    "str": u"string 字符串",
+    "bytes": u"bytes 比特串".encode("utf-8"),
     "boolean": True,
     "datetime": datetime.now(),
 }

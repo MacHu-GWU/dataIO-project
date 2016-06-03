@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import pytest
@@ -15,15 +15,15 @@ path_gz = os.path.abspath("test.json.gz")
 data_simple = {
     "int": 100,
     "float": 3.1415926535,
-    "str": "string 字符串",
+    "str": u"string 字符串",
     "boolean": True,
 }
 
 data_complex = {
     "int": 100,
     "float": 3.1415926535,
-    "str": "string 字符串",
-    "bytes": "bytes 比特串".encode("utf-8"),
+    "str": u"string 字符串",
+    "bytes": u"bytes 比特串".encode("utf-8"),
     "boolean": True,
     "datetime": datetime.now(),
 }
@@ -83,7 +83,7 @@ try:
         assert d["boolean"] == data_complex["boolean"]
 
         if py23.is_py3:
-            assert d["bytes"].decode("utf-8") == "bytes 比特串"
+            assert d["bytes"].decode("utf-8") == u"bytes 比特串"
 
         dt1 = d["datetime"]
         dt2 = data_complex["datetime"]
