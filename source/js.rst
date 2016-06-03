@@ -28,7 +28,7 @@ Dump and compress::
 	# you just need to change the file extension to .gz
 	js.dump(data, "data.json.gz")
 
-**If you are overwriting existing file, and sometime it is interrupted by some reason, you don't want a incomplete file. In other word, **you want atomic write** (It fail, otherwise 100% complete)**, you can use :meth:`~dataIO.js.safe_dump`::
+**If while you are overwriting existing file, it is been interrupted by some reason, then it left a incomplete file, and also you lose your old file!** I believe you absolute wants to avoid that. In other word, **you want atomic write** (It fail, otherwise 100% complete), you can use :meth:`~dataIO.js.safe_dump` instead::
 
 	js.safe_dump(data, "data.json")
 
