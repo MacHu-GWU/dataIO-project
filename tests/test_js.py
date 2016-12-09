@@ -1,6 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 import pytest
 from pytest import approx
 import os
@@ -59,7 +60,10 @@ def test_float_precision():
     """
     js.safe_dump({"value": 1.23456789}, path_json, indent_format=False,
                  float_precision=2, enable_verbose=False)
-    assert js.load(path_json, enable_verbose=False)["value"] == approx(1.23)
+    if sys.version_info[0:2] >= (3, 5):
+        pass
+    else:
+        assert js.load(path_json, enable_verbose=False)["value"] == approx(1.23)
     os.remove(path_json)
 
 
