@@ -89,9 +89,9 @@ try:
         dt2 = data_complex["datetime"]
 
         assert dt1.date() == dt2.date()
-        assert dt1.hour, dt2.hour
-        assert dt1.minute, dt2.minute
-        assert dt1.second, dt2.second
+        assert dt1.hour == dt2.hour
+        assert dt1.minute == dt2.minute
+        assert dt1.second == dt2.second
         assert abs(dt1.microsecond - dt2.microsecond) <= 1000
 
         os.remove(path_json)

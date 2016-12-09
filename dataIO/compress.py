@@ -51,4 +51,4 @@ def decompress_str(s):
     3. urlsafe_b64decode bytes --- zip decompress ---> bytes
     4. bytes -> str
     """
-    return zlib.decompress(base64.urlsafe_b64decode(s)).decode("utf-8")
+    return zlib.decompress(base64.urlsafe_b64decode(s.encode("utf-8"))).decode("utf-8")
