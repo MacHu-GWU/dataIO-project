@@ -5,4 +5,4 @@ __version__ = "0.0.2"
 __short_description__ = "Data IO tool set."
 __license__ = "MIT"
 __author__ = "Sanhe Hu"
-__all__ = ["compress", "js", "pk", "printer", "py23", "text"]
+__all__ = ["compress", "js", "pk", "printer", "py23", "textfile"]

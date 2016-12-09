@@ -104,6 +104,10 @@ def readlines(path, encoding="utf-8", skiplines=None, nlines=None, strip='right'
     :param skiplines: default None, skip first n lines
     :param nlines: default None, yield next n lines
     :param strip: default None, available option 'left', 'right', 'both'
+    
+    **中文文档**
+    
+    跳过前#skiplines行, 然后读取#nlines行。可对字符串进行strip预处理。
     """
     strip_method = str(strip).lower()
     if strip_method in _strip_method_mapping:
@@ -131,6 +135,10 @@ def readchunks(path, encoding="utf-8", skiplines=None, chunksize=None, strip='ri
     :param skiplines: default None, skip first n lines
     :param chunksize: default None (size-1 chunk), lines chunk size
     :param strip: default None, avaliable option 'left', 'right', 'both'
+    
+    **中文文档**
+    
+    跳过前#skiplines行, 每次读取#chunksize行yield。可对字符串进行strip预处理。
     """
     strip_method = str(strip).lower()
     if strip_method in _strip_method_mapping:
