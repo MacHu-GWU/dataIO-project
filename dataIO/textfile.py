@@ -89,6 +89,7 @@ def right_strip(s):
 def both_strip(s):
     return s.strip()
 
+
 _strip_method_mapping = {
     "none": no_strip,
     "left": left_strip,

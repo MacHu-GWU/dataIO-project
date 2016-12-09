@@ -61,7 +61,7 @@ def test_obj2_bytes_or_str():
     assert data == pk.str2obj(pk.obj2str(data))
     assert data == pk.bytes2obj(pk.obj2bytes(data))
 
+
 if __name__ == "__main__":
-    import py
     import os
-    py.test.cmdline.main("%s --tb=native -s" % os.path.basename(__file__))
+    pytest.main([os.path.basename(__file__), "--tb=native", "-s", ])

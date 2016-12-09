@@ -2,5 +2,5 @@
 # -*- coding: utf-8 -*-
 
 if __name__ == "__main__":
-    import py
-    py.test.cmdline.main("--tb=native -s")
+    import pytest
+    pytest.main(["--tb=native", "-s"])

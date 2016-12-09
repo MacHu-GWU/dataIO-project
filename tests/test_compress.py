@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import pytest
 from dataIO import compress
 from dataIO import textfile
 
@@ -29,7 +30,7 @@ def test_compress_decompress_str():
     # 压缩后的字符串比压缩前的字符串长度要小
     assert len(s1) <= len(s)
 
+
 if __name__ == "__main__":
-    import py
     import os
-    py.test.cmdline.main("%s --tb=native -s" % os.path.basename(__file__))
+    pytest.main([os.path.basename(__file__), "--tb=native", "-s", ])
