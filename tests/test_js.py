@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
+from pytest import approx
 import os
 from os.path import join
 from datetime import datetime
@@ -58,8 +59,7 @@ def test_float_precision():
     """
     js.safe_dump({"value": 1.23456789}, path_json, indent_format=False,
                  float_precision=2, enable_verbose=False)
-    assert abs(
-        js.load(path_json, enable_verbose=False)["value"] - 1.23) <= 0.000001
+    assert js.load(path_json, enable_verbose=False)["value"] == approx(1.23)
     os.remove(path_json)
 
 
