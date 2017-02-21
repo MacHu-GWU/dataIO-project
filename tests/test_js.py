@@ -1,6 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 import sys
 import warnings
 import pytest
@@ -18,15 +19,15 @@ path_gz = os.path.abspath("test.json.gz")
 data_simple = {
     "int": 100,
     "float": 3.1415926535,
-    "str": u"string 字符串",
+    "str": "string 字符串",
     "boolean": True,
 }
 
 data_complex = {
     "int": 100,
     "float": 3.1415926535,
-    "str": u"string 字符串",
-    "bytes": u"bytes 比特串".encode("utf-8"),
+    "str": "string 字符串",
+    "bytes": "bytes 比特串".encode("utf-8"),
     "boolean": True,
     "datetime": datetime.now(),
 }
@@ -61,9 +62,10 @@ def test_float_precision():
     """
     js.safe_dump({"value": 1.23456789}, path_json, indent_format=False,
                  float_precision=2, enable_verbose=False)
-    
+
     try:
-        assert js.load(path_json, enable_verbose=False)["value"] == approx(1.23)
+        assert js.load(path_json, enable_verbose=False)[
+            "value"] == approx(1.23)
     except:
         warnings.warn("float_precision argument is not working.")
     os.remove(path_json)
@@ -80,7 +82,7 @@ try:
     from bson import json_util
 
     def test_bytes_and_datetime():
-        js.safe_dump(data_complex, path_json, enable_verbose=False)
+        js.safe_dump(data_complex, path_json, ensure_ascii=True, enable_verbose=False)
         d = js.load(path_json, enable_verbose=False)
 
         assert d["int"] == data_complex["int"]
@@ -89,7 +91,7 @@ try:
         assert d["boolean"] == data_complex["boolean"]
 
         if py23.is_py3:
-            assert d["bytes"].decode("utf-8") == u"bytes 比特串"
+            assert d["bytes"].decode("utf-8") == "bytes 比特串"
 
         dt1 = d["datetime"]
         dt2 = data_complex["datetime"]
@@ -103,6 +105,14 @@ try:
         os.remove(path_json)
 except:
     pass
+
+
+def test_pretty_dumps():
+    data = {"id": 1, 
+            "path": r"C:\用户\麦克\\", 
+            "create_time": datetime.now(),}
+    s = js.pretty_dumps(data)
+    assert r"C:\\用户\\麦克\\\\" in s
 
 
 if __name__ == "__main__":

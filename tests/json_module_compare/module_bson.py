@@ -43,14 +43,14 @@ class Unittest(unittest.TestCase):
         }
         js = json_util.dumps(data)
 
-        self.assertEqual(data["int"], json_util.loads(js)["int"])
-        self.assertAlmostEqual(data["float"], json_util.loads(js)[
-                               "float"], delta=0.0001)
-        self.assertEqual(data["str"], json_util.loads(js)["str"])
-        self.assertEqual(data["boolean"], json_util.loads(js)["boolean"])
+        data1 = json_util.loads(js)
+        self.assertEqual(data["int"], data1["int"])
+        self.assertAlmostEqual(data["float"], data1["float"], delta=0.0001)
+        self.assertEqual(data["str"], data1["str"])
+        self.assertEqual(data["boolean"], data1["boolean"])
 
-        print(json_util.loads(js)["bytes"])
-        print(json_util.loads(js)["datetime"])
+        print(data1["bytes"])
+        print(data1["datetime"])
         print(json_util.dumps(data, sort_keys=True, indent=4))
 
 

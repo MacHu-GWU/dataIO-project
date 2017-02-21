@@ -15,7 +15,8 @@ useful method:
 from __future__ import print_function, unicode_literals
 
 import time
-import os, shutil
+import os
+import shutil
 import gzip
 
 from json import encoder
@@ -23,7 +24,7 @@ try:
     from bson import json_util as json
 except ImportError as e:
     import sys
-    err_msg = ("Warning: '%s', use standard lib 'json'. " 
+    err_msg = ("Warning: '%s', use standard lib 'json'. "
                "install 'pymongo' to activate more features.") % e
     sys.stderr.write(err_msg)
     import json
@@ -43,12 +44,15 @@ except:
 
 
 class JsonExtError(Exception):
+
+    """Raises when it is not a json file.
+    """
     pass
 
 
 def is_json_file(abspath):
     """Parse file extension.
-    
+
     - *.json: uncompressed, utf-8 encode json file
     - *.gz: compressed, utf-8 encode json file
     """
@@ -63,7 +67,7 @@ def is_json_file(abspath):
     else:
         raise JsonExtError(
             "'%s' is not a valid json file. "
-            "extension has to be '.json' for uncompressed, '.gz' " 
+            "extension has to be '.json' for uncompressed, '.gz' "
             "for compressed." % abspath)
     return is_json
 
@@ -110,12 +114,13 @@ def load(abspath, default=dict(), enable_verbose=True):
     :type enable_verbose: ``布尔值``
     """
     prt("\nLoad from '%s' ..." % abspath, enable_verbose)
-    
+
     abspath = lower_ext(str(abspath))
     is_json = is_json_file(abspath)
-        
+
     if not os.path.exists(abspath):
-        prt("    File not found, use default value: %r" % default, enable_verbose)
+        prt("    File not found, use default value: %r" %
+            default, enable_verbose)
         return default
 
     st = time.clock()
@@ -123,15 +128,16 @@ def load(abspath, default=dict(), enable_verbose=True):
         data = json.loads(textfile.read(abspath, encoding="utf-8"))
     else:
         data = json.loads(compress.read_gzip(abspath).decode("utf-8"))
-        
+
     prt("    Complete! Elapse %.6f sec." % (time.clock() - st), enable_verbose)
     return data
 
 
-def dump(data, abspath, 
-         indent_format=False, 
-         float_precision=None, 
-         overwrite=False, 
+def dump(data, abspath,
+         indent_format=False,
+         float_precision=None,
+         ensure_ascii=True,
+         overwrite=False,
          enable_verbose=True):
     """Dump Json serializable object to file.
     Provides multiple choice to customize the behavior.
@@ -195,14 +201,14 @@ def dump(data, abspath,
     :type enable_verbose: ``布尔值``
     """
     prt("\nDump to '%s' ..." % abspath, enable_verbose)
-    
+
     abspath = lower_ext(str(abspath))
     is_json = is_json_file(abspath)
-    
+
     if os.path.exists(abspath):
-        if not overwrite: # 存在, 并且overwrite=False
+        if not overwrite:  # 存在, 并且overwrite=False
             prt("    Stop! File exists and overwrite is not allowed",
-                 enable_verbose)
+                enable_verbose)
             return
 
     if float_precision is not None:
@@ -210,7 +216,7 @@ def dump(data, abspath,
         indent_format = True
     else:
         encoder.FLOAT_REPR = repr
-       
+
     if indent_format:
         sort_keys = True
         indent = 4
@@ -219,29 +225,31 @@ def dump(data, abspath,
         indent = None
 
     st = time.clock()
-    js = json.dumps(data, sort_keys=sort_keys, indent=indent)
+    js = json.dumps(data, sort_keys=sort_keys, indent=indent,
+                    ensure_ascii=ensure_ascii)
     content = js.encode("utf-8")
     if is_json:
         textfile.writebytes(content, abspath)
     else:
         compress.write_gzip(content, abspath)
-    
+
     prt("    Complete! Elapse %.6f sec." % (time.clock() - st), enable_verbose)
 
 
-def safe_dump(data, abspath, 
-         indent_format=False, 
-         float_precision=None,
-         enable_verbose=True):
+def safe_dump(data, abspath,
+              indent_format=False,
+              float_precision=None,
+              ensure_ascii=True,
+              enable_verbose=True):
     """A stable version of :func:`dump`, this method will silently overwrite 
     existing file.
-    
+
     There's a issue with :func:`dump`: If your program is interrupted while 
     writing, you got an incomplete file, and you also lose the original file.
     So this method write json to a temporary file first, then rename to what
     you expect, and silently overwrite old one. This way can guarantee atomic 
     write.
-    
+
     **中文文档**
 
     在对文件进行写入时, 如果程序中断, 则会留下一个不完整的文件。如果使用了覆盖式
@@ -252,15 +260,29 @@ def safe_dump(data, abspath,
     """
     abspath = lower_ext(str(abspath))
     abspath_temp = "%s.tmp" % abspath
-    dump(data, abspath_temp, 
-         indent_format=indent_format, float_precision=float_precision, 
+    dump(data, abspath_temp,
+         indent_format=indent_format, float_precision=float_precision,
+         ensure_ascii=ensure_ascii,
          overwrite=True, enable_verbose=enable_verbose)
     shutil.move(abspath_temp, abspath)
 
 
+def pretty_dumps(data):
+    """Return json string in pretty format.
+
+    **中文文档**
+
+    将字典转化成格式化后的字符串。
+    """
+    try:
+        return json.dumps(data, sort_keys=True, indent=4, ensure_ascii=False)
+    except:
+        return json.dumps(data, sort_keys=True, indent=4, ensure_ascii=True)
+    
+
 def pprint(data):
     """Print Json in pretty human readable format.
-    
+
     There's a standard module pprint, can pretty print python dict and list.
     But it doesn't support sorted key, and indent doesn't looks good.
 
@@ -277,4 +299,4 @@ def pprint(data):
 
     以人类可读的方式打印可Json化的Python对象。
     """
-    print(json.dumps(data, sort_keys=True, indent=4))
+    print(pretty_dumps(data))
