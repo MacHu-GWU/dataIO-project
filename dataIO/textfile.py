@@ -10,6 +10,7 @@ By default, it use "utf-8" encoding.
 from __future__ import print_function
 
 import os
+import zlib
 
 try:
     import chardet
@@ -25,11 +26,31 @@ except:
     from dataIO.py23 import int_type
 
 
+def is_gzip_file(abspath):
+    """Parse file extension.
+
+    - *.json: uncompressed, utf-8 encode json file
+    - *.gz: compressed, utf-8 encode json file
+    """
+    abspath = abspath.lower()
+    _, ext = os.path.splitext(abspath)
+    if ext in [".gz", ".zip"]:
+        is_gzip = True
+    else:
+        is_gzip = False
+    return is_gzip
+
+
 def write(s, path, encoding="utf-8"):
     """Write string to text file.
     """
+    is_gzip = is_gzip_file(path)
+
     with open(path, "wb") as f:
-        f.write(s.encode(encoding))
+        if is_gzip:
+            f.write(zlib.compress(s.encode(encoding)))
+        else:
+            f.write(s.encode(encoding))
 
 
 def writebytes(b, path):
@@ -42,8 +63,13 @@ def writebytes(b, path):
 def read(path, encoding="utf-8"):
     """Read string from text file.
     """
+    is_gzip = is_gzip_file(path)
+
     with open(path, "rb") as f:
-        return f.read().decode(encoding)
+        if is_gzip:
+            return zlib.decompress(f.read()).decode(encoding)
+        else:
+            return f.read().decode(encoding)
 
 
 def readbytes(path):

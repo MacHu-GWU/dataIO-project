@@ -23,20 +23,17 @@ else:
 
 #--- Unittest ---
 if __name__ == "__main__":
-    import unittest
-    
-    class Unittest(unittest.TestCase):
-        def test_all(self):
-            s = "text" # unicode string
-            b = s.encode("utf-8") # bytes
-            i = 32 # integer
-            i_long = 1000000000000 # long integer
-            f = 3.14 # float
+    def test():
+        s = "text" # unicode string
+        b = s.encode("utf-8") # bytes
+        i = 32 # integer
+        i_long = 1000000000000 # long integer
+        f = 3.14 # float
+
+        assert isinstance(s, str_type)
+        assert isinstance(b, bytes)
+        assert isinstance(i, int_type)
+        assert isinstance(i_long, int_type)
+        assert isinstance(f, float)
             
-            self.assertIsInstance(s, str_type)
-            self.assertIsInstance(b, bytes)
-            self.assertIsInstance(i, int_type)
-            self.assertIsInstance(i_long, int_type)
-            self.assertIsInstance(f, float)
-            
-    unittest.main()
+    test()

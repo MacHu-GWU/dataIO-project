@@ -17,34 +17,30 @@ from __future__ import print_function, unicode_literals
 import time
 import os
 import shutil
-import gzip
-
 from json import encoder
+
 try:
     from bson import json_util as json
 except ImportError as e:
     import sys
-    err_msg = ("Warning: '%s', use standard lib 'json'. "
-               "install 'pymongo' to activate more features.") % e
+
+    err_msg = ("Notice: '%s', using standard lib 'json'. "
+               "install 'pymongo' to support datetime type. "
+               "You can ignore this message if you want.")
     sys.stderr.write(err_msg)
     import json
 
 try:
+    from . import compress
+    from . import textfile
     from .printer import prt
 except:
-    from dataIO.printer import prt
-try:
-    from . import compress
-except:
     from dataIO import compress
-try:
-    from . import textfile
-except:
     from dataIO import textfile
+    from dataIO.printer import prt
 
 
 class JsonExtError(Exception):
-
     """Raises when it is not a json file.
     """
     pass
@@ -79,7 +75,7 @@ def lower_ext(abspath):
     return fname + ext.lower()
 
 
-def load(abspath, default=dict(), enable_verbose=True):
+def load(abspath, default=None, enable_verbose=True):
     """Load Json from file. If file are not exists, returns ``default``.
 
     :param abspath: file path. use absolute path as much as you can. 
@@ -113,6 +109,9 @@ def load(abspath, default=dict(), enable_verbose=True):
     :param enable_verbose: 默认 ``True``, 信息提示的开关, 批处理时建议关闭
     :type enable_verbose: ``布尔值``
     """
+    if default is None:
+        default = dict()
+
     prt("\nLoad from '%s' ..." % abspath, enable_verbose)
 
     abspath = lower_ext(str(abspath))
@@ -278,7 +277,7 @@ def pretty_dumps(data):
         return json.dumps(data, sort_keys=True, indent=4, ensure_ascii=False)
     except:
         return json.dumps(data, sort_keys=True, indent=4, ensure_ascii=True)
-    
+
 
 def pprint(data):
     """Print Json in pretty human readable format.
